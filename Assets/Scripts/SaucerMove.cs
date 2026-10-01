@@ -1,83 +1,61 @@
-using System.Collections;
-using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem; //need to add this
 
-public class SaucerMove : MonoBehaviour
+public class SubMove : MonoBehaviour
 {
-    Rigidbody rb;
-    // Start is called before the first frame update
+    //Rigidbody allows for independent physics movement with the physics engine
+    Rigidbody myRb; //create a new local Rigidbody called myRb
+    //public Rigidbody publicRb;
+    public AudioClip boomClip;
+    InputAction moveAction; //an input action to map to the action in the InputSystem Actions
+    InputAction brakeAction;
+    InputAction lookAction;
+   
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
-
+        //assign our rigidbody to be the component of the type rigidbody
+        //attached to the same gameobject as our script
+        myRb = GetComponent<Rigidbody>();
+      moveAction = InputSystem.actions.FindAction("Move");
+      brakeAction = InputSystem.actions.FindAction("Interact");
+      lookAction = InputSystem.actions.FindAction("Look");
     }
 
-
-    float floatExampleFunction(){
-      return 5f;
-    }
-
-
-    void FixedUpdate()
+    //We have to use FixedUpdate to make sure the physics forced aren't linked
+    //to our framerate. We would hate for the movement to slow or speed up according to FPS.
+    void Update()
     {
-      if (Input.GetKey(KeyCode.W)){
-        rb.AddForce(0, 0, 1f, ForceMode.Impulse);
-      }
-        if (Input.GetKey(KeyCode.S)){
-          rb.AddForce(0, 0, -1f, ForceMode.Impulse);
+      Vector2 rawMove = moveAction.ReadValue<Vector2>();
+      Vector3 move = new Vector3(rawMove.x, 0f, rawMove.y);
+        
+      myRb.AddRelativeForce(move); //add force to our rigidbody in this direction
+
+
+      Vector2 rawLook = lookAction.ReadValue<Vector2>();
+      Vector3 look = new Vector3(-rawLook.y, rawLook.x, 0f);
+      transform.Rotate(look);
+        
+        //create a brake
+        if (brakeAction.IsPressed())
+        {
+          Debug.Log("BRAKE!!");
+            myRb.linearVelocity *= 0.99f; //decrease the velocity by 1% each loop
         }
-          if (Input.GetKey(KeyCode.A)){
-            rb.AddForce(-1f, 0, 0, ForceMode.Impulse);
-          }
-            if (Input.GetKey(KeyCode.D)){
-              rb.AddForce(1f, 0, 0, ForceMode.Impulse);
-            }
-              if (Input.GetKey(KeyCode.Q)){
-                rb.AddForce(0, -1f, 0, ForceMode.Impulse);
-              }
-                if (Input.GetKey(KeyCode.E)){
-                  rb.AddForce(0, 1f, 0, ForceMode.Impulse);
-                }
-      //BRAKE
-      //every time FixedUpdate runs and the space bar is pressed, make
-      //the velocity 90% of how fast it was before
-      if (Input.GetKey(KeyCode.Space)){
-        rb.linearVelocity *= 0.9f;
-      }
+
+      
     }
-
-
-    //OnCollisionEnter gets called by the engine any time a collision
-    //happens between this gameObject and another one when one has a rigidbody
-    //When it runs, it creates a new Collision object that has all the information
-    //about the collision ... aka Aaron the cop takes down all the collision information
-    //from when Siul hit Juno on the expressway.
-    void OnCollisionEnter(Collision collisionReport){
-      //this will tell us where the object we collided with is located
-      Debug.Log("collision at " + collisionReport.transform.position);
-
-      //This will destroy the gameObject specified
-      //in this case, it's the gameObject we collided with
-      Destroy(collisionReport.gameObject);
+    //this function is called whenever this gameobject collides with another one
+    //at least one of the objects must have a rigidbody
+    void OnCollisionEnter(Collision colReport) //it creates a new Collision object with the info about the collision, similar to the police report when jeremy hit yeyzer
+    {
+        Debug.Log("collision you died :)"); //a message in the console showing that this is working
+        
+        //use getcomponent to access the audiosource attached to the same gameobject
+        //then access the playoneshot method, which will play an audioclip from the audiosource one time
+        //the first parameter is which audioclip
+        //the second is the volume percentage represented by a decimal
+        GetComponent<AudioSource>().PlayOneShot(boomClip, .95f);
     }
-
-
-    //Function Examples
-    //when declaring a function, you first specify the type
-    //which indicates what the function returns
-
-    //an int function returns an integer
-        int intExampleFunction(int myInt){
-          return 5;
-        }
-        int intExampleFunction(){
-          return 20;
-        }
-    //a void function just does whatever is in the code without returning a value
-        void voidConsoleMessageExampleFunction(int myInt){
-          Debug.Log("function received int of " + myInt);
-        }
-        void CancelAppointment(int emplID){
-          //do the cancellation thing with the emplid
-        }
 }

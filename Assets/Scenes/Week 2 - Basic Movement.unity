@@ -541,13 +541,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 212302852}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalRotation: {x: 0.16891114, y: -0, z: -0, w: 0.98563135}
+  m_LocalPosition: {x: 0, y: 2.87, z: -3.25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 19.449, y: 0, z: 0}
 --- !u!114 &212302856
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -988,6 +988,7 @@ GameObject:
   - component: {fileID: 952821698}
   - component: {fileID: 952821697}
   - component: {fileID: 952821696}
+  - component: {fileID: 952821701}
   m_Layer: 0
   m_Name: Cylinder
   m_TagString: Untagged
@@ -1105,6 +1106,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &952821701
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 952821695}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2d530e9e45234561bfa4835592a5fb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HighlightPath
+  gridParent: {fileID: 417098051}
 --- !u!1 &1169618089
 GameObject:
   m_ObjectHideFlags: 0
