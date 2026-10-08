@@ -11,6 +11,7 @@ public class SubMove : MonoBehaviour
     InputAction moveAction; //an input action to map to the action in the InputSystem Actions
     InputAction brakeAction;
     InputAction lookAction;
+    public float enginePower = 5f;
    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -21,13 +22,14 @@ public class SubMove : MonoBehaviour
       moveAction = InputSystem.actions.FindAction("Move");
       brakeAction = InputSystem.actions.FindAction("Interact");
       lookAction = InputSystem.actions.FindAction("Look");
+      
     }
 
     //We have to use FixedUpdate to make sure the physics forced aren't linked
     //to our framerate. We would hate for the movement to slow or speed up according to FPS.
     void FixedUpdate()
   {
-      Vector2 rawMove = moveAction.ReadValue<Vector2>();
+      Vector2 rawMove = moveAction.ReadValue<Vector2>() * enginePower;
       Vector3 move = new Vector3(rawMove.x, 0f, rawMove.y);
         
       myRb.AddRelativeForce(move); //add force to our rigidbody in this direction
@@ -45,8 +47,12 @@ public class SubMove : MonoBehaviour
     {
       Vector2 rawLook = lookAction.ReadValue<Vector2>();
       Vector3 look = new Vector3(-rawLook.y, rawLook.x, 0f);
-      transform.Rotate(look);
+      //transform.Rotate(look);
     }
+
+
+
+
     //this function is called whenever this gameobject collides with another one
     //at least one of the objects must have a rigidbody
     void OnCollisionEnter(Collision colReport) //it creates a new Collision object with the info about the collision, similar to the police report when jeremy hit yeyzer
