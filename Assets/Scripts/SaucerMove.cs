@@ -2,7 +2,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem; //need to add this
 
-public class SubMove : MonoBehaviour
+public class SaucerMove : MonoBehaviour
 {
     //Rigidbody allows for independent physics movement with the physics engine
     Rigidbody myRb; //create a new local Rigidbody called myRb
@@ -47,7 +47,7 @@ public class SubMove : MonoBehaviour
     {
       Vector2 rawLook = lookAction.ReadValue<Vector2>();
       Vector3 look = new Vector3(-rawLook.y, rawLook.x, 0f);
-      //transform.Rotate(look);
+      transform.Rotate(look);
     }
 
 
