@@ -1,9 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.InputSystem;
 public class ThugProNavigator : MonoBehaviour
 {
+    InputAction cursorAction;
+    InputAction clickAction;
     NavMeshAgent DvaAgent;
   public Transform target;
   public Transform cursorPreview;
@@ -14,28 +15,32 @@ public class ThugProNavigator : MonoBehaviour
     {
         DvaAgent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
+        cursorAction = InputSystem.actions.FindAction("Point");
+        clickAction = InputSystem.actions.FindAction("Attack");
     }
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
   {
       
       cursorPreview.position = new Vector3(-9999f,0f,0f);
         //transform.LookAt(target); //example for scott
         //DvaAgent.SetDestination(target.position);
       if (DvaAgent.remainingDistance > 0.5f){
-        anim.SetFloat("Forward", 1);
+        anim.SetFloat("Run", 1);
       } else {
-        anim.SetFloat("Forward", 0);
+        anim.SetFloat("Run", 0);
       }
 
-      Ray laser = Camera.main.ScreenPointToRay(Input.mousePosition);
+      Ray laser = Camera.main.ScreenPointToRay(cursorAction.ReadValue<Vector2>());
 
       RaycastHit laserImpactReport = new RaycastHit();
 
       if (Physics.Raycast(laser, out laserImpactReport)){
       cursorPreview.gameObject.GetComponent<Renderer>().material.color += new Color(.005f, .005f, .005f, .005f);
       cursorPreview.position = laserImpactReport.point;
-        if (Input.GetMouseButtonDown(0)){
+
+        if (clickAction.IsPressed()){
+
             cursorPreview.gameObject.GetComponent<Renderer>().material.color = Color.black;
             DvaAgent.SetDestination(laserImpactReport.point);
         }
